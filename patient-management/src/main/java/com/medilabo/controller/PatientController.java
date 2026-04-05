@@ -1,7 +1,7 @@
 package com.medilabo.controller;
 
 import com.medilabo.entity.Patient;
-import com.medilabo.repository.PatientRepository;
+import com.medilabo.service.PatientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -15,22 +15,22 @@ public class PatientController {
 
     private static final Logger logger = LoggerFactory.getLogger(PatientController.class);
 
-    private final PatientRepository repository;
+    private final PatientService patientService;
 
-    public PatientController(PatientRepository repository) {
-        this.repository = repository;
+    public PatientController(PatientService patientService) {
+        this.patientService = patientService;
     }
 
     @GetMapping
     public List<Patient> getAllPatients() {
         logger.info("Request to get all patients");
-        return repository.findAll();
+        return patientService.getAllPatients();
     }
 
     @PostMapping
     public Patient createPatient(@RequestBody Patient patient) {
         logger.info("Creating new patient: FirstName={}, LastName={}", patient.getFirstName(), patient.getLastName());
-        Patient savedPatient = repository.save(patient);
+        Patient savedPatient = patientService.createPatient(patient);
         logger.info("Patient created with id={}", savedPatient.getId());
         return savedPatient;
     }
@@ -38,7 +38,7 @@ public class PatientController {
     @GetMapping("/{id}")
     public ResponseEntity<Patient> getPatientById(@PathVariable Long id) {
         logger.info("Fetching patient with id={}", id);
-        return repository.findById(id)
+        return patientService.getPatientById(id)
                 .map(patient -> {
                     logger.info("Patient found with id={}", id);
                     return ResponseEntity.ok(patient);
@@ -52,13 +52,8 @@ public class PatientController {
     @PutMapping("/{id}")
     public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @RequestBody Patient patientDetails) {
         logger.info("Updating patient with id={}", id);
-        return repository.findById(id)
+        return patientService.updatePatient(id, patientDetails)
                 .map(patient -> {
-                    patient.setFirstName(patientDetails.getFirstName());
-                    patient.setLastName(patientDetails.getLastName());
-                    patient.setEmail(patientDetails.getEmail());
-                    patient.setDateOfBirth(patientDetails.getDateOfBirth());
-                    repository.save(patient);
                     logger.info("Patient updated with id={}", id);
                     return ResponseEntity.ok(patient);
                 })
@@ -71,15 +66,12 @@ public class PatientController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
         logger.info("Deleting patient with id={}", id);
-        return repository.findById(id)
-                .map(patient -> {
-                    repository.delete(patient);
-                    logger.info("Patient deleted with id={}", id);
-                    return ResponseEntity.ok().<Void>build();
-                })
-                .orElseGet(() -> {
-                    logger.warn("Patient not found for deletion with id={}", id);
-                    return ResponseEntity.notFound().build();
-                });
+        if (patientService.deletePatient(id)) {
+            logger.info("Patient deleted with id={}", id);
+            return ResponseEntity.ok().build();
+        } else {
+            logger.warn("Patient not found for deletion with id={}", id);
+            return ResponseEntity.notFound().build();
+        }
     }
 }
