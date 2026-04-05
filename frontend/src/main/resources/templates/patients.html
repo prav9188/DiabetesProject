@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Patients List</title>
+    <meta charset="UTF-8" />
+</head>
+<body>
+<h1>Patients</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <!-- Add other patient fields as needed -->
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="patient : ${patients}">
+        <td th:text="${patient['id']}">ID</td>
+        <td th:text="${patient['firstName']}">First Name</td>
+        <td th:text="${patient['lastName']}">Last Name</td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Add New Patient form -->
+<h2>Add New Patient</h2>
+<form th:action="@{/patients/add}" method="post">
+    <input type="text" name="firstName" placeholder="First Name" required />
+    <input type="text" name="lastName" placeholder="Last Name" required />
+    <button type="submit">Add Patient</button>
+</form>
+
+<!-- Update Patient form -->
+<h2>Update Patient</h2>
+<form th:action="@{/patients/update}" method="post">
+    <input type="number" name="id" placeholder="Patient ID" required />
+    <input type="text" name="firstName" placeholder="First Name" required />
+    <input type="text" name="lastName" placeholder="Last Name" required />
+    <button type="submit">Update Patient</button>
+</form>
+
+<!-- Delete Patient form -->
+<h2>Delete Patient</h2>
+<form th:action="@{/patients/delete}" method="post">
+    <input type="number" name="id" placeholder="Patient ID" required />
+    <button type="submit">Delete Patient</button>
+</form>
+
+</body>
+</html>
