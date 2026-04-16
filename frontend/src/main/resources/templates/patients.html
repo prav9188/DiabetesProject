@@ -12,7 +12,7 @@
         <th>ID</th>
         <th>First Name</th>
         <th>Last Name</th>
-        <!-- Add other patient fields as needed -->
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -20,6 +20,9 @@
         <td th:text="${patient['id']}">ID</td>
         <td th:text="${patient['firstName']}">First Name</td>
         <td th:text="${patient['lastName']}">Last Name</td>
+        <td>
+            <a th:href="@{/notes/{id}(id=${patient['id']})}">View Notes</a>
+        </td>
     </tr>
     </tbody>
 </table>

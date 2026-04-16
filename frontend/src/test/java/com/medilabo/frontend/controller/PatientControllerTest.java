@@ -1,5 +1,6 @@
 package com.medilabo.frontend.controller;
 
+import com.medilabo.frontend.service.NoteService;
 import com.medilabo.frontend.service.PatientService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ class PatientControllerTest {
 
     @MockBean
     private PatientService patientService;
+
+    @MockBean
+    private NoteService noteService;
 
     @Test
     void testGetPatients() throws Exception {
@@ -74,5 +78,57 @@ class PatientControllerTest {
                 .andExpect(redirectedUrl("/"));
 
         verify(patientService, times(1)).deletePatient(1L);
+    }
+
+    @Test
+    void testGetNotes() throws Exception {
+        List<Map> mockNotes = List.of(
+                Map.of("id", "note1", "patientId", 1L, "content", "Test note 1"),
+                Map.of("id", "note2", "patientId", 1L, "content", "Test note 2")
+        );
+        when(noteService.getNotesByPatientId(1L)).thenReturn(mockNotes);
+
+        mockMvc.perform(get("/notes/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("notes"))
+                .andExpect(model().attributeExists("notes"))
+                .andExpect(model().attribute("notes", mockNotes))
+                .andExpect(model().attribute("patientId", 1L));
+
+        verify(noteService, times(1)).getNotesByPatientId(1L);
+    }
+
+    @Test
+    void testAddNote() throws Exception {
+        mockMvc.perform(post("/notes/add")
+                        .param("patientId", "1")
+                        .param("content", "New note"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/notes/1"));
+
+        verify(noteService, times(1)).addNote(1L, "New note");
+    }
+
+    @Test
+    void testUpdateNote() throws Exception {
+        mockMvc.perform(post("/notes/update")
+                        .param("id", "note1")
+                        .param("patientId", "1")
+                        .param("content", "Updated note"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/notes/1"));
+
+        verify(noteService, times(1)).updateNote("note1", "Updated note");
+    }
+
+    @Test
+    void testDeleteNote() throws Exception {
+        mockMvc.perform(post("/notes/delete")
+                        .param("id", "note1")
+                        .param("patientId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/notes/1"));
+
+        verify(noteService, times(1)).deleteNote("note1");
     }
 }

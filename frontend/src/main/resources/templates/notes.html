@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Physician Notes</title>
+    <meta charset="UTF-8" />
+</head>
+<body>
+<h1>Physician Notes for Patient ID: <span th:text="${patientId}"></span></h1>
+<a href="/">Back to Patients List</a>
+
+<hr/>
+
+<h2>Existing Notes</h2>
+<div th:if="${not #lists.isEmpty(notes)}">
+    <div th:each="note : ${notes}" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+        <p><strong>Date:</strong> <span th:text="${note['createdAt']}"></span></p>
+        <p><strong>Content:</strong></p>
+        <div th:utext="${note['content']}">Note content here</div>
+        
+        <form th:action="@{/notes/delete}" method="post" style="display:inline;">
+            <input type="hidden" name="id" th:value="${note['id']}" />
+            <input type="hidden" name="patientId" th:value="${patientId}" />
+            <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+        </form>
+
+        <button type="button" th:attr="onclick=|document.getElementById('update-form-${note['id']}').style.display='block'|">Edit</button>
+
+        <div th:id="'update-form-' + ${note['id']}" style="display:none; margin-top: 10px;">
+            <form th:action="@{/notes/update}" method="post">
+                <input type="hidden" name="id" th:value="${note['id']}" />
+                <input type="hidden" name="patientId" th:value="${patientId}" />
+                <textarea name="content" th:text="${note['content']}" required style="width: 100%; height: 100px;"></textarea><br/>
+                <button type="submit">Save Changes</button>
+                <button type="button" th:attr="onclick=|document.getElementById('update-form-${note['id']}').style.display='none'|">Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:if="${#lists.isEmpty(notes)}">
+    <p>No notes found for this patient.</p>
+</div>
+
+<hr/>
+
+<h2>Add New Note</h2>
+<form th:action="@{/notes/add}" method="post">
+    <input type="hidden" name="patientId" th:value="${patientId}" />
+    <textarea name="content" placeholder="Enter note content (HTML allowed)" required style="width: 100%; height: 100px;"></textarea><br/>
+    <button type="submit">Add Note</button>
+</form>
+
+</body>
+</html>

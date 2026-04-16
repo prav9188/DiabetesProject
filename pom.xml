@@ -13,6 +13,7 @@
         <module>patient-management</module>
         <module>gateway</module>
         <module>frontend</module>
+        <module>physician-notes</module>
     </modules>
 
     <properties>

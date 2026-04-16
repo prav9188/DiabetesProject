@@ -1,12 +1,13 @@
-# Sprint 1 - Patient Management Microservice, Gateway, and Frontend V1
+# Project Diabetes Management - Sprint Documentation
 
-## Sprint 1 Summary
+## Sprint 1 - Patient Management Microservice, Gateway, and Frontend V1
+
+### Sprint 1 Summary
 This sprint focuses on developing the initial architecture of the application with the patient management microservice, a gateway for request routing, and the first version of the frontend UI. The goal is to ensure seamless communication between these components, with basic security, data persistence using PostgreSQL, and comprehensive functional testing. Global logging and test coverage have also been implemented.
 
 ---
 
-## Entry Criteria
-
+### Entry Criteria
 - Understanding of user stories and business context.
 - Development environment setup (Java, Spring Boot, PostgreSQL).
 - Initial configuration of the patient-management, gateway, and frontend microservices.
@@ -14,8 +15,7 @@ This sprint focuses on developing the initial architecture of the application wi
 
 ---
 
-## Exit Criteria
-
+### Exit Criteria
 - Successful build of all modules (patient-management, gateway, frontend).
 - Fully operational Patient Management microservice with PostgreSQL connection configured.
 - REST endpoints (GET, POST, PUT, DELETE) tested and working via tools such as Bruno.
@@ -29,7 +29,7 @@ This sprint focuses on developing the initial architecture of the application wi
 
 ---
 
-## Sprint 1 Checklist - Mapping to Completed Tasks
+### Sprint 1 Checklist - Mapping to Completed Tasks
 
 | Task                                                                 | Status     |
 |----------------------------------------------------------------------|------------|
@@ -49,31 +49,76 @@ This sprint focuses on developing the initial architecture of the application wi
 
 ---
 
+## Sprint 2 - Physician Notes Microservice, MongoDB, and Frontend V2
+
+### Sprint 2 Summary
+This sprint focuses on the integration of the Physician Notes microservice, which allows doctors to add, edit, and delete notes for each patient. Data is persisted in a NoSQL MongoDB database. The gateway has been updated to route requests to this new microservice, and the frontend has been enhanced to provide a dedicated interface for managing patient notes.
+
+---
+
+### Entry Criteria
+- Functional architecture from Sprint 1 (Patient Management, Gateway, Frontend).
+- MongoDB installed and configured locally.
+- Understanding of NoSQL data modeling for patient notes.
+- Updated backlog with tasks for notes management.
+
+---
+
+### Exit Criteria
+- Successful build of the new `physician-notes` module.
+- Fully operational Physician Notes microservice with MongoDB connection.
+- REST endpoints for notes (GET, POST, PUT, DELETE) tested and working.
+- Gateway updated to route `/notes/**` requests to the notes microservice.
+- Frontend updated with a new "Notes" view and CRUD operations for notes.
+- Unit and integration tests for the notes microservice with high coverage.
+- End-to-end flow verified: Patient -> Notes interaction.
+
+---
+
+### Sprint 2 Checklist - Mapping to Completed Tasks
+
+| Task                                                                 | Status     |
+|----------------------------------------------------------------------|------------|
+| Successful build of physician-notes module                           | ✔ Completed|
+| MongoDB connection configuration in physician-notes                  | ✔ Completed|
+| Implemented Notes REST controller and service                        | ✔ Completed|
+| Integrated MongoDB for note persistence                              | ✔ Completed|
+| Updated Gateway to route requests to physician-notes                 | ✔ Completed|
+| Enhanced Frontend with dedicated Notes UI                            | ✔ Completed|
+| Implemented Note CRUD operations in Frontend                         | ✔ Completed|
+| Added unit and integration tests for physician-notes                 | ✔ Completed|
+| Verified full integration between all microservices                  | ✔ Completed|
+
+---
+
 ## Functional Flow Description
 
 1. **Patient Management Microservice**:  
-   Manages patient data persistence using a PostgreSQL database. Exposes secured REST endpoints (GET, POST, PUT, DELETE) allowing full patient management. The microservice is launched via `PatientManagementApplication`.
+   Manages patient data persistence using a PostgreSQL database. Exposes secured REST endpoints (GET, POST, PUT, DELETE).
 
-2. **Spring Cloud Gateway**:  
-   Acts as the single entry point to access different microservices. It routes incoming requests to the patient-management microservice securely and filters requests with Spring Security. Configuration is defined in `application.properties` and `SecurityConfig`.
+2. **Physician Notes Microservice**:  
+   Manages clinical notes for patients using MongoDB. Exposes REST endpoints to create, read, update, and delete notes associated with a patient ID.
 
-3. **Frontend Microservice**:  
-   A Spring Boot application using Thymeleaf that provides a simple UI to display and manipulate patient data. Communicates with the gateway to access the patient-management microservice. Supports full CRUD operations and uses `PatientController` to manage interactions.
+3. **Spring Cloud Gateway**:  
+   Acts as the single entry point. It routes requests to `patient-management` (for `/patients/**`) and `physician-notes` (for `/notes/**`).
 
-4. **Logging and Testing**:  
-   Global logging tracks all actions in the three microservices. Unit and integration tests are executed using Jacoco and Surefire to ensure code quality and coverage.
+4. **Frontend Microservice**:  
+   Provides a Thymeleaf-based UI. Users can view the patient list and click on a patient to manage their clinical notes. It communicates with both microservices via the gateway.
+
+5. **Logging and Testing**:  
+   Global logging tracks actions across all microservices. Jacoco and Surefire ensure high test coverage for all modules.
 
 ---
 
 ## How to Run the Microservices
 
-- Start PostgreSQL and set up the database (check the `application.properties` in patient-management).
+- Start PostgreSQL and MongoDB services.
 - Run `PatientManagementApplication` (patient-management module).
+- Run `PhysicianNotesApplication` (physician-notes module).
 - Run the Gateway application.
-- Run the Frontend application (`FrontendApplication`).
-- Access REST endpoints via REST tools or through the frontend UI.
-- Check the logs to trace all performed actions.
-- Execute unit tests using Maven/Gradle commands.
+- Run the Frontend application.
+- Access the frontend UI at `http://localhost:8080`.
+- Use the UI to manage patients and their clinical notes.
 
 ---
 
