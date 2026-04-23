@@ -6,6 +6,10 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing a physician's note.
+ * Stored as a document in MongoDB to allow for flexible, unstructured medical data.
+ */
 @Document(collection = "notes")
 public class Note {
 

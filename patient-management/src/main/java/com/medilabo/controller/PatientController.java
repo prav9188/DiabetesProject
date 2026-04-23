@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller managing patient resource operations.
+ * Provides RESTful endpoints for CRUD operations on patient records.
+ * Uses a relational database for persistent storage.
+ */
 @RestController
 @RequestMapping("/patients")
 public class PatientController {
@@ -21,12 +26,23 @@ public class PatientController {
         this.patientService = patientService;
     }
 
+    /**
+     * Retrieves all registered patients.
+     *
+     * @return A list of all patients in the system.
+     */
     @GetMapping
     public List<Patient> getAllPatients() {
         logger.info("Request to get all patients");
         return patientService.getAllPatients();
     }
 
+    /**
+     * Registers a new patient in the system.
+     *
+     * @param patient The patient details to save.
+     * @return The saved patient entity with its generated ID.
+     */
     @PostMapping
     public Patient createPatient(@RequestBody Patient patient) {
         logger.info("Creating new patient: FirstName={}, LastName={}", patient.getFirstName(), patient.getLastName());
@@ -35,6 +51,12 @@ public class PatientController {
         return savedPatient;
     }
 
+    /**
+     * Fetches a single patient by their unique identifier.
+     *
+     * @param id The ID of the patient to find.
+     * @return A ResponseEntity containing the patient if found, or 404 if not.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Patient> getPatientById(@PathVariable Long id) {
         logger.info("Fetching patient with id={}", id);

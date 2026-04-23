@@ -2,6 +2,7 @@ package com.medilabo.frontend.controller;
 
 import com.medilabo.frontend.service.NoteService;
 import com.medilabo.frontend.service.PatientService;
+import com.medilabo.frontend.service.RiskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -21,10 +22,12 @@ public class PatientController {
 
     private final PatientService patientService;
     private final NoteService noteService;
+    private final RiskService riskService;
 
-    public PatientController(PatientService patientService, NoteService noteService) {
+    public PatientController(PatientService patientService, NoteService noteService, RiskService riskService) {
         this.patientService = patientService;
         this.noteService = noteService;
+        this.riskService = riskService;
     }
 
     @GetMapping("/")
@@ -39,10 +42,13 @@ public class PatientController {
 
     @GetMapping("/notes/{patientId}")
     public String getNotes(@PathVariable Long patientId, Model model) {
-        logger.info("Fetching notes for patient id={}", patientId);
+        logger.info("Fetching notes and risk for patient id={}", patientId);
         List<Map> notes = noteService.getNotesByPatientId(patientId);
+        String riskLevel = riskService.getRiskByPatientId(patientId);
+        
         model.addAttribute("notes", notes);
         model.addAttribute("patientId", patientId);
+        model.addAttribute("riskLevel", riskLevel);
         return "notes";
     }
 
@@ -69,9 +75,14 @@ public class PatientController {
 
     @PostMapping("/patients/add")
     public String addPatient(@RequestParam String firstName,
-                             @RequestParam String lastName) {
+                             @RequestParam String lastName,
+                             @RequestParam String email,
+                             @RequestParam String dateOfBirth,
+                             @RequestParam String gender,
+                             @RequestParam String phone,
+                             @RequestParam String address) {
         logger.info("Adding new patient: FirstName={}, LastName={}", firstName, lastName);
-        patientService.addPatient(firstName, lastName);
+        patientService.addPatient(firstName, lastName, email, dateOfBirth, gender, phone, address);
         logger.info("Patient added successfully");
         return "redirect:/";
     }
@@ -79,9 +90,14 @@ public class PatientController {
     @PostMapping("/patients/update")
     public String updatePatient(@RequestParam Long id,
                                 @RequestParam String firstName,
-                                @RequestParam String lastName) {
+                                @RequestParam String lastName,
+                                @RequestParam String email,
+                                @RequestParam String dateOfBirth,
+                                @RequestParam String gender,
+                                @RequestParam String phone,
+                                @RequestParam String address) {
         logger.info("Updating patient id={}: FirstName={}, LastName={}", id, firstName, lastName);
-        patientService.updatePatient(id, firstName, lastName);
+        patientService.updatePatient(id, firstName, lastName, email, dateOfBirth, gender, phone, address);
         logger.info("Patient id={} updated successfully", id);
         return "redirect:/";
     }

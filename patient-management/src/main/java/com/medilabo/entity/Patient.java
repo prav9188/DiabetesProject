@@ -5,6 +5,10 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
+/**
+ * Entity representing a Patient record.
+ * Maps to the underlying relational database table.
+ */
 @Entity
 public class Patient {
 
@@ -16,6 +20,9 @@ public class Patient {
     private String lastName;
     private String email;
     private String dateOfBirth;
+    private String gender;
+    private String phone;
+    private String address;
 
     // Getters and setters
 
@@ -48,5 +55,23 @@ public class Patient {
     }
     public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+    public String getGender() {
+        return gender;
+    }
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+    public String getPhone() {
+        return phone;
+    }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    public String getAddress() {
+        return address;
+    }
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

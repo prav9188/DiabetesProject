@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  patient-management:
+    build: ./patient-management
+    environment:
+      # Connect back to the host's local PostgreSQL
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/medilabo_db
+      SPRING_DATASOURCE_USERNAME: medilabo_user
+      SPRING_DATASOURCE_PASSWORD: 9188
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8081:8081"
+
+  physician-notes:
+    build: ./physician-notes
+    environment:
+      # Connect back to the host's local MongoDB
+      SPRING_DATA_MONGODB_URI: mongodb://host.docker.internal:27017/medilabo_notes
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8083:8083"
+
+  diabetes-risk:
+    build: ./diabetes-risk
+    environment:
+      GATEWAY_URL: http://gateway:8080
+    ports:
+      - "8084:8084"
+    depends_on:
+      - gateway
+
+  gateway:
+    build: ./gateway
+    environment:
+      PATIENT_SERVICE_URI: http://patient-management:8081
+      NOTES_SERVICE_URI: http://physician-notes:8083
+      RISK_SERVICE_URI: http://diabetes-risk:8084
+    ports:
+      - "8080:8080"
+    depends_on:
+      - patient-management
+      - physician-notes
+
+  frontend:
+    build: ./frontend
+    environment:
+      GATEWAY_URL: http://gateway:8080
+    ports:
+      - "8082:8082"
+    depends_on:
+      - gateway

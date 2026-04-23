@@ -28,6 +28,9 @@ class PatientControllerTest {
     @MockBean
     private NoteService noteService;
 
+    @MockBean
+    private com.medilabo.frontend.service.RiskService riskService;
+
     @Test
     void testGetPatients() throws Exception {
         // Mock list of patients returned from service
@@ -51,11 +54,16 @@ class PatientControllerTest {
     void testAddPatient() throws Exception {
         mockMvc.perform(post("/patients/add")
                         .param("firstName", "John")
-                        .param("lastName", "Doe"))
+                        .param("lastName", "Doe")
+                        .param("email", "john@doe.com")
+                        .param("dateOfBirth", "1990-01-01")
+                        .param("gender", "M")
+                        .param("phone", "123-456")
+                        .param("address", "123 Main St"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
 
-        verify(patientService, times(1)).addPatient("John", "Doe");
+        verify(patientService, times(1)).addPatient("John", "Doe", "john@doe.com", "1990-01-01", "M", "123-456", "123 Main St");
     }
 
     @Test
@@ -63,11 +71,16 @@ class PatientControllerTest {
         mockMvc.perform(post("/patients/update")
                         .param("id", "1")
                         .param("firstName", "Jane")
-                        .param("lastName", "Doe"))
+                        .param("lastName", "Doe")
+                        .param("email", "jane@doe.com")
+                        .param("dateOfBirth", "1990-01-01")
+                        .param("gender", "F")
+                        .param("phone", "123-456")
+                        .param("address", "123 Main St"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
 
-        verify(patientService, times(1)).updatePatient(1L, "Jane", "Doe");
+        verify(patientService, times(1)).updatePatient(1L, "Jane", "Doe", "jane@doe.com", "1990-01-01", "F", "123-456", "123 Main St");
     }
 
     @Test

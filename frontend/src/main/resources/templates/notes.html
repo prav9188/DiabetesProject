@@ -8,6 +8,12 @@
 <h1>Physician Notes for Patient ID: <span th:text="${patientId}"></span></h1>
 <a href="/">Back to Patients List</a>
 
+<div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-top: 20px; border: 1px solid #dee2e6;">
+    <h3>Diabetes Risk Assessment: 
+        <span th:text="${riskLevel}" th:style="'color: ' + (${riskLevel} == 'None' ? 'green' : (${riskLevel} == 'Borderline' ? 'orange' : 'red'))"></span>
+    </h3>
+</div>
+
 <hr/>
 
 <h2>Existing Notes</h2>

@@ -10,6 +10,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Implementation of the PatientService for the Frontend.
+ * This service acts as a client to the API Gateway, fetching and sending patient
+ * data using non-blocking WebClient calls.
+ */
 @Service
 public class PatientServiceImpl implements PatientService {
 
@@ -35,6 +40,13 @@ public class PatientServiceImpl implements PatientService {
         return "Basic " + java.util.Base64.getEncoder().encodeToString(auth.getBytes());
     }
 
+    /**
+     * Fetches all patients via the API Gateway.
+     * Note: While WebClient is reactive, this method uses .block() because the
+     * Thymeleaf frontend is currently synchronous.
+     *
+     * @return A list of patient maps.
+     */
     @Override
     public List<Map> getAllPatients() {
         logger.info("Service layer: Fetching patients list from gateway");
@@ -48,11 +60,16 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void addPatient(String firstName, String lastName) {
+    public void addPatient(String firstName, String lastName, String email, String dateOfBirth, String gender, String phone, String address) {
         logger.info("Service layer: Adding new patient: {} {}", firstName, lastName);
         Map<String, Object> newPatient = Map.of(
                 "firstName", firstName,
-                "lastName", lastName
+                "lastName", lastName,
+                "email", email,
+                "dateOfBirth", dateOfBirth,
+                "gender", gender,
+                "phone", phone,
+                "address", address
         );
 
         webClient.post()
@@ -65,12 +82,17 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void updatePatient(Long id, String firstName, String lastName) {
+    public void updatePatient(Long id, String firstName, String lastName, String email, String dateOfBirth, String gender, String phone, String address) {
         logger.info("Service layer: Updating patient id={}", id);
         Map<String, Object> updatedPatient = Map.of(
                 "id", id,
                 "firstName", firstName,
-                "lastName", lastName
+                "lastName", lastName,
+                "email", email,
+                "dateOfBirth", dateOfBirth,
+                "gender", gender,
+                "phone", phone,
+                "address", address
         );
 
         webClient.put()

@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller for managing physician notes.
+ * Uses MongoDB (NoSQL) for flexible document storage of unstructured medical notes.
+ */
 @RestController
 @RequestMapping("/notes")
 public class NotesController {
@@ -26,6 +30,12 @@ public class NotesController {
         return noteService.getAllNotes();
     }
 
+    /**
+     * Retrieves all medical notes for a specific patient.
+     *
+     * @param patientId The unique ID of the patient.
+     * @return A list of notes associated with the patient.
+     */
     @GetMapping("/patient/{patientId}")
     public List<Note> getNotesByPatientId(@PathVariable Long patientId) {
         logger.info("Fetching notes for patient id={}", patientId);
@@ -43,6 +53,12 @@ public class NotesController {
                 });
     }
 
+    /**
+     * Adds a new physician note for a patient.
+     *
+     * @param note The note content and metadata.
+     * @return The saved note entity.
+     */
     @PostMapping
     public Note createNote(@RequestBody Note note) {
         logger.info("Request to create note for patient id={}", note.getPatientId());
